@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enhanced Arithmetic Shell</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #00ff88;
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        #terminal {
+            border: 1px solid #00ff88;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        input {
+            width: 100%;
+            background: black;
+            color: #00ff88;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🖥️ Enhanced Arithmetic Shell</h2>
+<div id="terminal"></div>
+<input type="text" id="commandInput" placeholder="Enter command..." autofocus>
+
+<script>
+    const terminal = document.getElementById("terminal");
+    const input = document.getElementById("commandInput");
+
+    function print(text) {
+        terminal.innerHTML += text + "<br>";
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearScreen() {
+        terminal.innerHTML = "";
+    }
+
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            const command = input.value.trim();
+            print("> " + command);
+            processCommand(command);
+            input.value = "";
+        }
+    });
+
+    function processCommand(command) {
+        const parts = command.split(" ");
+        const cmd = parts[0].toLowerCase();
+
+        // HELP
+        if (cmd === "help") {
+            print("📌 Available Commands:");
+            print("help - Show commands");
+            print("clear - Clear screen");
+            print("date - Show current date/time");
+            print("echo <text> - Print text");
+            print("add/sub/mul/div num1 num2 - Arithmetic");
+            print("exit - Disable input");
+            return;
+        }
+
+        // CLEAR
+        if (cmd === "clear") {
+            clearScreen();
+            return;
+        }
+
+        // DATE
+        if (cmd === "date") {
+            print("📅 " + new Date().toString());
+            return;
+        }
+
+        // ECHO
+        if (cmd === "echo") {
+            const message = parts.slice(1).join(" ");
+            print(message);
+            return;
+        }
+
+        // EXIT
+        if (cmd === "exit") {
+            print("❌ Shell terminated");
+            input.disabled = true;
+            return;
+        }
+
+        // ARITHMETIC
+        if (parts.length === 3) {
+            const a = parseFloat(parts[1]);
+            const b = parseFloat(parts[2]);
+
+            if (isNaN(a) || isNaN(b)) {
+                print("❌ Invalid numbers");
+                return;
+            }
+
+            let result;
+
+            switch (cmd) {
+                case "add":
+                    result = a + b;
+                    break;
+                case "sub":
+                    result = a - b;
+                    break;
+                case "mul":
+                    result = a * b;
+                    break;
+                case "div":
+                    if (b === 0) {
+                        print("❌ Cannot divide by zero");
+                        return;
+                    }
+                    result = a / b;
+                    break;
+                default:
+                    print("❌ Unknown command. Type 'help'");
+                    return;
+            }
+
+            print("✅ Result: " + result);
+            return;
+        }
+
+        print("❌ Invalid command. Type 'help'");
+    }
+</script>
+
+</body>
+</html>
